@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breach Scanner</title>
+    <title>Breach Scanner - DI2</title>
     <style>
         /* General Body Styling */
         body {
@@ -30,6 +30,12 @@
             letter-spacing: 1rem;
             user-select: none; /* Prevent text selection */
             z-index: 0;
+        }
+
+        /* Title Styling */
+        .title {
+            text-align: center; /* Center align the title */
+            z-index: 1; /* Keep title above the background */
         }
 
         /* Search Form */
@@ -79,12 +85,16 @@
             color: #00ff00;
             text-align: left;
         }
+
     </style>
 </head>
 <body>
 
     <!-- Breach Scanner Title -->
-    <h1>Breach Scanner</h1>
+    <div class="title">
+        <h1>Breach Scanner</h1>
+        <h2>DI2</h2> <!-- DI2 as a subtitle -->
+    </div>
 
     <!-- Matrix-Style DI2 Background -->
     <div class="matrix-bg">DI2</div>
