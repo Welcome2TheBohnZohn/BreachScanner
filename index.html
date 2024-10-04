@@ -3,139 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breach Scanner - DI2</title>
+    <title>Breach Scanner</title>
     <style>
-        /* General Body Styling */
         body {
-            font-family: 'Courier New', Courier, monospace; /* Matrix-like font */
-            background-color: black;
-            color: #00ff00; /* Matrix green */
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            background-color: black; /* Black background */
+            color: white; /* White text */
+            font-family: Arial, sans-serif; /* Font style */
+            text-align: center; /* Center align text */
+            padding: 20px; /* Add some padding */
         }
-
-        /* Matrix-style DI2 Background Text */
-        .matrix-bg {
-            position: absolute;
-            top: 60%; /* Move it lower to appear below the title */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 10rem; /* Huge DI2 text */
-            color: rgba(0, 255, 0, 0.1); /* Faint Matrix green */
-            letter-spacing: 1rem;
-            user-select: none; /* Prevent text selection */
-            z-index: 0;
+        h1 {
+            font-size: 48px; /* Large font for title */
+            margin-bottom: 20px; /* Space below title */
         }
-
-        /* Title Styling */
-        .title {
-            text-align: center; /* Center align the title */
-            z-index: 1; /* Keep title above the background */
-        }
-
-        /* Search Form */
-        form {
-            z-index: 1; /* Keep form above the background */
-            display: flex; /* Use flexbox for horizontal alignment */
-            margin-top: 20px;
-        }
-
         input[type="text"] {
-            padding: 15px;
-            width: 80%;
-            max-width: 400px; /* Set a max width for better appearance */
-            font-size: 1.2rem;
-            background-color: #333; /* Dark input background */
-            color: #00ff00; /* Matrix green text */
-            border: 2px solid #00ff00; /* Green border */
-            outline: none;
+            width: 300px; /* Input field width */
+            padding: 10px; /* Padding in input */
             margin-right: 10px; /* Space between input and button */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
         }
-
         button {
-            padding: 15px 25px;
-            font-size: 1.2rem;
-            background-color: #00ff00;
-            color: black;
-            border: none;
-            cursor: pointer;
+            padding: 10px 20px; /* Padding in button */
+            background-color: #007BFF; /* Button color */
+            color: white; /* Button text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor pointer on hover */
         }
-
         button:hover {
-            background-color: #009900;
+            background-color: #0056b3; /* Darker button on hover */
         }
-
-        /* Results Styling */
         #results {
-            margin-top: 30px;
-            z-index: 1;
+            margin-top: 20px; /* Space above results */
+            text-align: left; /* Align text to the left */
         }
-
         .result-item {
-            background-color: #111; /* Dark card background */
-            padding: 10px;
-            margin: 10px auto;
-            max-width: 600px;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            text-align: left;
+            background-color: #222; /* Background for result items */
+            padding: 10px; /* Padding in result items */
+            margin: 5px 0; /* Space between result items */
+            border-radius: 5px; /* Rounded corners */
         }
-
     </style>
 </head>
 <body>
-
-    <!-- Breach Scanner Title -->
-    <div class="title">
-        <h1>Breach Scanner</h1>
-        <h2>DI2</h2> <!-- DI2 as a subtitle -->
-    </div>
-
-    <!-- Matrix-Style DI2 Background -->
-    <div class="matrix-bg">DI2</div>
-
-    <!-- Search Form -->
-    <form id="search-form">
-        <input type="text" id="searchTerm" placeholder="Enter search term" required>
-        <button type="submit">Search</button>
-    </form>
-
-    <!-- Results -->
-    <div id="results"></div>
-
+    <h1>Breach Scanner</h1> <!-- Title Only -->
+    
+    <input type="text" id="search-input" placeholder="Enter search term" />
+    <button onclick="search()">Search</button>
+    
+    <div id="results"></div> <!-- Container for displaying results -->
+    
     <script>
-        document.getElementById('search-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const searchTerm = document.getElementById('searchTerm').value;
+        async function search() {
+            const searchTerm = document.getElementById("search-input").value;
+            const response = await fetch(`/api/search?term=${encodeURIComponent(searchTerm)}`);
+            
+            // Clear previous results
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = '';
 
-            // Call the serverless API (URL will be updated later)
-            fetch(`https://your-api-url.com/search?term=${searchTerm}`)
-                .then(response => response.json())
-                .then(data => {
-                    const resultsContainer = document.getElementById('results');
-                    resultsContainer.innerHTML = '';
+            if (response.ok) {
+                const results = await response.json();
 
-                    if (data.length > 0) {
-                        data.forEach(result => {
-                            const resultItem = document.createElement('div');
-                            resultItem.classList.add('result-item');
-                            resultItem.textContent = `${result.name} - ${result.otherField}`;
-                            resultsContainer.appendChild(resultItem);
-                        });
-                    } else {
-                        resultsContainer.textContent = 'No results found.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
+                if (results.length > 0) {
+                    // Create a list of results
+                    results.forEach(result => {
+                        const resultDiv = document.createElement('div');
+                        resultDiv.className = 'result-item';
+                        
+                        // Display fields of the result (adjust based on your data structure)
+                        resultDiv.innerHTML = `
+                            <p>Field 1: ${result.field1}</p>
+                            <p>Field 2: ${result.field2}</p>
+                            <p>Field 3: ${result.field3}</p> <!-- Add more fields as needed -->
+                        `;
+                        
+                        resultsContainer.appendChild(resultDiv);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<p>No results found.</p>';
+                }
+            } else {
+                resultsContainer.innerHTML = '<p>Error fetching results.</p>';
+            }
+        }
     </script>
-
 </body>
 </html>
