@@ -17,26 +17,15 @@ exports.handler = async (req, res) => {
         // Connect to the MongoDB client
         await client.connect();
 
-        // Get a list of all databases
-        const databases = await client.db().admin().listDatabases();
+        // Specify the 'test' database
+        const database = client.db('test'); // Use the database name 'test'
+        const collection = database.collection('nyc link'); // Specify the collection name 'nyc link'
         
-        const allResults = [];
+        // Perform the search query using regex
+        const results = await collection.find({ name: { $regex: searchTerm, $options: 'i' } }).toArray(); // Adjust query as needed
 
-        // Iterate through each database
-        for (const db of databases.databases) {
-            const database = client.db(db.name);
-            const collections = await database.listCollections().toArray();
-            
-            // Iterate through each collection in the database
-            for (const collection of collections) {
-                const coll = database.collection(collection.name);
-                const results = await coll.find({ name: { $regex: searchTerm, $options: 'i' } }).toArray(); // Adjust query as needed
-                allResults.push({ collection: collection.name, results });
-            }
-        }
-
-        // Return all search results
-        return res.status(200).json(allResults);
+        // Return search results
+        return res.status(200).json(results);
     } catch (error) {
         // Handle errors
         return res.status(500).json({ error: error.message });
