@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breach Scanner</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Courier New', Courier, monospace; /* Matrix-like font */
+            background-color: black;
+            color: #00ff00; /* Matrix green */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Matrix-style DI2 Background Text */
+        .matrix-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10rem; /* Huge DI2 text */
+            color: rgba(0, 255, 0, 0.1); /* Faint Matrix green */
+            letter-spacing: 1rem;
+            user-select: none; /* Prevent text selection */
+            z-index: 0;
+        }
+
+        /* Search Form */
+        form {
+            z-index: 1; /* Keep form above the background */
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            width: 80%;
+            max-width: 600px;
+            font-size: 1.2rem;
+            background-color: #333; /* Dark input background */
+            color: #00ff00; /* Matrix green text */
+            border: 2px solid #00ff00; /* Green border */
+            outline: none;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            background-color: #00ff00;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #009900;
+        }
+
+        /* Results Styling */
+        #results {
+            margin-top: 30px;
+            z-index: 1;
+        }
+
+        .result-item {
+            background-color: #111; /* Dark card background */
+            padding: 10px;
+            margin: 10px auto;
+            max-width: 600px;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Matrix-Style DI2 Background -->
+    <div class="matrix-bg">DI2</div>
+
+    <!-- Breach Scanner Title -->
+    <h1>Breach Scanner</h1>
+
+    <!-- Search Form -->
+    <form id="search-form">
+        <input type="text" id="searchTerm" placeholder="Enter search term" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Results -->
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const searchTerm = document.getElementById('searchTerm').value;
+
+            // Call the serverless API (URL will be updated later)
+            fetch(`https://your-api-url.com/search?term=${searchTerm}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsContainer = document.getElementById('results');
+                    resultsContainer.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach(result => {
+                            const resultItem = document.createElement('div');
+                            resultItem.classList.add('result-item');
+                            resultItem.textContent = `${result.name} - ${result.otherField}`;
+                            resultsContainer.appendChild(resultItem);
+                        });
+                    } else {
+                        resultsContainer.textContent = 'No results found.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+
+</body>
+</html>
