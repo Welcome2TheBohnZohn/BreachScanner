@@ -6,87 +6,51 @@
     <title>Breach Scanner</title>
     <style>
         body {
-            background-color: black; /* Black background */
-            color: white; /* White text */
-            font-family: Arial, sans-serif; /* Font style */
-            text-align: center; /* Center align text */
-            padding: 20px; /* Add some padding */
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
         }
-        h1 {
-            font-size: 48px; /* Large font for title */
-            margin-bottom: 20px; /* Space below title */
-        }
-        input[type="text"] {
-            width: 300px; /* Input field width */
-            padding: 10px; /* Padding in input */
-            margin-right: 10px; /* Space between input and button */
-            border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
+        input {
+            padding: 10px;
+            width: 200px;
         }
         button {
-            padding: 10px 20px; /* Padding in button */
-            background-color: #007BFF; /* Button color */
-            color: white; /* Button text color */
-            border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Cursor pointer on hover */
-        }
-        button:hover {
-            background-color: #0056b3; /* Darker button on hover */
+            padding: 10px;
         }
         #results {
-            margin-top: 20px; /* Space above results */
-            text-align: left; /* Align text to the left */
-        }
-        .result-item {
-            background-color: #222; /* Background for result items */
-            padding: 10px; /* Padding in result items */
-            margin: 5px 0; /* Space between result items */
-            border-radius: 5px; /* Rounded corners */
+            margin-top: 20px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
-    <h1>Breach Scanner</h1> <!-- Title Only -->
-    
-    <input type="text" id="search-input" placeholder="Enter search term" />
+    <h1>Breach Scanner</h1>
+    <input type="text" id="searchTerm" placeholder="Enter search term">
     <button onclick="search()">Search</button>
-    
-    <div id="results"></div> <!-- Container for displaying results -->
-    
+    <div id="results"></div>
+
     <script>
-        async function search() {
-            const searchTerm = document.getElementById("search-input").value;
-            const response = await fetch(`/api/search?term=${encodeURIComponent(searchTerm)}`);
-            
-            // Clear previous results
-            const resultsContainer = document.getElementById("results");
-            resultsContainer.innerHTML = '';
-
-            if (response.ok) {
-                const results = await response.json();
-
-                if (results.length > 0) {
-                    // Create a list of results
-                    results.forEach(result => {
-                        const resultDiv = document.createElement('div');
-                        resultDiv.className = 'result-item';
-                        
-                        // Display fields of the result (adjust based on your data structure)
-                        resultDiv.innerHTML = `
-                            <p>Field 1: ${result.field1}</p>
-                            <p>Field 2: ${result.field2}</p>
-                            <p>Field 3: ${result.field3}</p> <!-- Add more fields as needed -->
-                        `;
-                        
-                        resultsContainer.appendChild(resultDiv);
-                    });
-                } else {
-                    resultsContainer.innerHTML = '<p>No results found.</p>';
-                }
-            } else {
-                resultsContainer.innerHTML = '<p>Error fetching results.</p>';
-            }
+        function search() {
+            const term = document.getElementById('searchTerm').value;
+            fetch(`https://script.google.com/macros/s/AKfycbz0MTM1Ih8fjNKpYuxVmsCQr19wByqv11dc121RTEntTCIb44oJeCxYbgXPw1PuveDKDw/exec?term=${encodeURIComponent(term)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = ''; // Clear previous results
+                    if (data.length === 0) {
+                        resultsDiv.innerHTML = 'No results found.';
+                    } else {
+                        data.forEach(row => {
+                            resultsDiv.innerHTML += row.join(', ') + '<br>';
+                        });
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
 </body>
